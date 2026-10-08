@@ -1,0 +1,275 @@
+{
+  "n_rows": 25000,
+  "positive_rate": 0.41408,
+  "train_rows": 20000,
+  "test_rows": 5000,
+  "split": "stratified 80/20, random_state=42",
+  "models": {
+    "RandomForest/pattern": {
+      "feature_set": "pattern",
+      "n_features": 31,
+      "test": {
+        "precision": 0.946031746031746,
+        "recall": 0.7198067632850241,
+        "f1": 0.8175582990397805,
+        "false_positive_rate": 0.02901023890784983,
+        "roc_auc": 0.8850352013981633,
+        "confusion_matrix": {
+          "tn": 2845,
+          "fp": 85,
+          "fn": 580,
+          "tp": 1490
+        },
+        "n": 5000
+      }
+    },
+    "XGBoost/pattern": {
+      "feature_set": "pattern",
+      "n_features": 31,
+      "test": {
+        "precision": 0.9422110552763819,
+        "recall": 0.7246376811594203,
+        "f1": 0.8192244675040962,
+        "false_positive_rate": 0.031399317406143344,
+        "roc_auc": 0.8863057492869038,
+        "confusion_matrix": {
+          "tn": 2838,
+          "fp": 92,
+          "fn": 570,
+          "tp": 1500
+        },
+        "n": 5000
+      }
+    },
+    "RandomForest/records": {
+      "feature_set": "records",
+      "n_features": 43,
+      "test": {
+        "precision": 0.9828080229226361,
+        "recall": 0.9942028985507246,
+        "f1": 0.9884726224783862,
+        "false_positive_rate": 0.012286689419795221,
+        "roc_auc": 0.9995896192972911,
+        "confusion_matrix": {
+          "tn": 2894,
+          "fp": 36,
+          "fn": 12,
+          "tp": 2058
+        },
+        "n": 5000
+      }
+    },
+    "XGBoost/records": {
+      "feature_set": "records",
+      "n_features": 43,
+      "test": {
+        "precision": 0.991321118611379,
+        "recall": 0.9932367149758454,
+        "f1": 0.9922779922779923,
+        "false_positive_rate": 0.0061433447098976105,
+        "roc_auc": 0.9998140179057229,
+        "confusion_matrix": {
+          "tn": 2912,
+          "fp": 18,
+          "fn": 14,
+          "tp": 2056
+        },
+        "n": 5000
+      }
+    },
+    "RandomForest/full": {
+      "feature_set": "full",
+      "n_features": 51,
+      "test": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "false_positive_rate": 0.0,
+        "roc_auc": 1.0,
+        "confusion_matrix": {
+          "tn": 2930,
+          "fp": 0,
+          "fn": 0,
+          "tp": 2070
+        },
+        "n": 5000
+      }
+    },
+    "XGBoost/full": {
+      "feature_set": "full",
+      "n_features": 51,
+      "test": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "false_positive_rate": 0.0,
+        "roc_auc": 1.0,
+        "confusion_matrix": {
+          "tn": 2930,
+          "fp": 0,
+          "fn": 0,
+          "tp": 2070
+        },
+        "n": 5000
+      }
+    }
+  },
+  "cv": {
+    "RandomForest/pattern": {
+      "precision": 0.9422022919780767,
+      "recall": 0.7306800618238022,
+      "f1": 0.8230685527747552,
+      "roc_auc": 0.8862115389728842,
+      "false_positive_rate": 0.031676679410158386
+    },
+    "XGBoost/pattern": {
+      "precision": 0.9360522424839822,
+      "recall": 0.7338678516228748,
+      "f1": 0.8227203811999133,
+      "roc_auc": 0.8863596138745223,
+      "false_positive_rate": 0.03543145821955216
+    },
+    "RandomForest/records": {
+      "precision": 0.9809831701055434,
+      "recall": 0.9966190108191654,
+      "f1": 0.9887392783554555,
+      "roc_auc": 0.9995354602112678,
+      "false_positive_rate": 0.013653741125068269
+    },
+    "XGBoost/records": {
+      "precision": 0.9903521466473709,
+      "recall": 0.9915958268933539,
+      "f1": 0.9909735965632089,
+      "roc_auc": 0.9997524995631646,
+      "false_positive_rate": 0.006826870562534134
+    },
+    "RandomForest/full": {
+      "precision": 0.9987451737451738,
+      "recall": 0.9995170015455951,
+      "f1": 0.9991309385863267,
+      "roc_auc": 0.9999976918424489,
+      "false_positive_rate": 0.0008874931731294375
+    },
+    "XGBoost/full": {
+      "precision": 0.999613563906869,
+      "recall": 0.9995170015455951,
+      "f1": 0.9995652803941458,
+      "roc_auc": 0.999999109710659,
+      "false_positive_rate": 0.00027307482250136535
+    }
+  },
+  "baseline_rules_only": {
+    "precision": 0.9534776600644864,
+    "recall": 1.0,
+    "f1": 0.9761848620608347,
+    "false_positive_rate": 0.03447098976109215,
+    "roc_auc": 0.9912490313432589,
+    "confusion_matrix": {
+      "tn": 2829,
+      "fp": 101,
+      "fn": 0,
+      "tp": 2070
+    },
+    "n": 5000
+  },
+  "baseline_ml_only": {
+    "model": "XGBoost/pattern",
+    "precision": 0.9422110552763819,
+    "recall": 0.7246376811594203,
+    "f1": 0.8192244675040962,
+    "false_positive_rate": 0.031399317406143344,
+    "roc_auc": 0.8863057492869038,
+    "confusion_matrix": {
+      "tn": 2838,
+      "fp": 92,
+      "fn": 570,
+      "tp": 1500
+    },
+    "n": 5000
+  },
+  "hybrid_rules_plus_ml": {
+    "model": "XGBoost/records",
+    "precision": 0.9460694698354661,
+    "recall": 1.0,
+    "f1": 0.9722874589008924,
+    "false_positive_rate": 0.040273037542662114,
+    "roc_auc": null,
+    "confusion_matrix": {
+      "tn": 2812,
+      "fp": 118,
+      "fn": 0,
+      "tp": 2070
+    },
+    "n": 5000
+  },
+  "deployed_model": "XGBoost/records",
+  "deployed_feature_set": "records",
+  "feature_importance_top15": {
+    "mutation_owner_match": 0.23234952986240387,
+    "mutation_type_match": 0.09118490666151047,
+    "seller_prior_share_sold": 0.07672752439975739,
+    "ownership_chain_consistent": 0.07436420768499374,
+    "registration_area_diff": 0.07387387752532959,
+    "mutation_area_diff": 0.06811514496803284,
+    "mutation_previous_match": 0.06175254285335541,
+    "share_ratio": 0.06091555580496788,
+    "days_since_previous_transfer": 0.05794335529208183,
+    "registration_buyer_match": 0.03041796386241913,
+    "registration_type_match": 0.02877676859498024,
+    "registration_seller_match": 0.01925012283027172,
+    "has_mutation": 0.015053736045956612,
+    "mut_minus_reg_days": 0.014283496886491776,
+    "registration_delay_days": 0.012277025729417801
+  },
+  "feature_docs": {
+    "parcel_transaction_count": "How many transactions the parcel has in total.",
+    "seller_transaction_count": "How many transactions this seller appears in (as seller).",
+    "buyer_transaction_count": "How many transactions this buyer appears in (as buyer).",
+    "transaction_frequency": "Parcel transactions per year of its recorded history.",
+    "days_since_previous_transfer": "Days since the previous transfer of the parcel (20000 if first).",
+    "has_previous_transfer": "1 if the parcel had an earlier transfer.",
+    "average_transfer_interval": "Average days between transfers of this parcel.",
+    "transferred_area_ratio": "Transferred area / parcel total area.",
+    "transferred_area_decimal": "Transferred area in decimal.",
+    "parcel_total_area": "Parcel total area in decimal.",
+    "seller_share_before": "Seller's recorded share (%) before the transfer.",
+    "transferred_share": "Share (%) transferred.",
+    "share_ratio": "Transferred share / seller share before (capped at 5).",
+    "ownership_sequence": "Position of the transaction in the parcel's ownership sequence.",
+    "ownership_change_count": "Number of ownership changes on the parcel up to and including this one.",
+    "seller_prior_txns_on_parcel": "Earlier transactions by the same seller on the same parcel.",
+    "seller_prior_share_sold": "Cumulative share (%) the seller already sold on this parcel earlier.",
+    "registration_delay_days": "Days between transaction and registration (negative = registered before).",
+    "mutation_delay_days": "Days between registration and mutation.",
+    "has_registration": "1 if a registration record exists.",
+    "has_mutation": "1 if a mutation record exists.",
+    "log_value_per_decimal": "log(1 + transaction value per decimal).",
+    "type_Sale": "1 if the transaction type is Sale.",
+    "type_Gift": "1 if the transaction type is Gift.",
+    "type_Inheritance": "1 if the transaction type is Inheritance.",
+    "type_Transfer": "1 if the transaction type is Transfer.",
+    "type_Partition": "1 if the transaction type is Partition.",
+    "status_Completed": "1 if the transaction status is Completed.",
+    "status_Pending": "1 if the transaction status is Pending.",
+    "status_Cancelled": "1 if the transaction status is Cancelled.",
+    "status_Under Review": "1 if the transaction status is Under Review.",
+    "registration_buyer_match": "1 buyer in registration equals transaction buyer, 0 differs, -1 no registration.",
+    "registration_seller_match": "1 seller in registration equals transaction seller, 0 differs, -1 no registration.",
+    "registration_area_diff": "Absolute area difference registration vs transaction (-1 if missing).",
+    "registration_type_match": "1 registration type equals transaction type, 0 differs, -1 missing.",
+    "mutation_owner_match": "1 mutation owner equals registered buyer, 0 differs, -1 no mutation.",
+    "mutation_previous_match": "1 mutation previous owner equals registered seller, 0 differs, -1 no mutation.",
+    "mutation_area_diff": "Absolute area difference mutation vs registration (-1 if missing).",
+    "mutation_share_diff": "Absolute share difference mutation vs transaction (-1 if missing).",
+    "mutation_type_match": "1 mutation type equals registration type, 0 differs, -1 missing.",
+    "ownership_chain_consistent": "1 recorded seller equals recorded previous owner, else 0.",
+    "reg_minus_txn_days": "Registration date minus transaction date in days (0 if missing).",
+    "mut_minus_reg_days": "Mutation date minus registration date in days (0 if missing)."
+  },
+  "notes": [
+    "fraud_labels.csv is synthetic ground truth derived from deterministic rules over the same records.",
+    "'pattern' = raw history/timing features only; 'records' adds record-comparison features; 'full' adds the rule signals and is shown only to demonstrate label leakage.",
+    "Stored ML scores are 5-fold out-of-fold predictions, so no transaction is scored by a model that saw its label.",
+    "The Investigation Priority Score is NOT a fraud probability."
+  ]
+}
