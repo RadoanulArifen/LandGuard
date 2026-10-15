@@ -4,6 +4,7 @@ import { api } from '../services/api'
 import { useApi } from '../hooks/useApi'
 import { Card, ErrorBox, LevelBadge, PageHeader, Spinner } from '../components/ui'
 import { CHART_COLORS, dateFmt, fmt } from '../utils/format'
+import { useLanguage } from '../i18n'
 
 const CARDS = [
   ['parcels_analyzed', 'Parcels Analyzed', 'border-sky-200 bg-sky-50 text-sky-700'], ['transactions_analyzed', 'Transactions Analyzed', 'border-slate-200 bg-white text-slate-800'],
@@ -16,7 +17,7 @@ const DonutWithLegend = ({ data, colorOf }) => {
   const total = data.reduce((a, b) => a + b.value, 0) || 1
   return (
     <div className="flex items-center gap-3">
-      <div className="h-40 w-40 shrink-0"><ResponsiveContainer width="100%" height="100%"><PieChart>
+      <div className="h-32 w-32 shrink-0 sm:h-40 sm:w-40"><ResponsiveContainer width="100%" height="100%"><PieChart>
         <Pie data={data} dataKey="value" nameKey="name" innerRadius={34} outerRadius={70} paddingAngle={1} stroke="#fff">{data.map((d, i) => <Cell key={d.name} fill={colorOf(d, i)} />)}</Pie>
         <Tooltip formatter={(v) => fmt(v)} /></PieChart></ResponsiveContainer></div>
       <ul className="min-w-0 flex-1 space-y-1 text-[11px] text-slate-600">{data.map((d, i) => (
@@ -27,18 +28,19 @@ const DonutWithLegend = ({ data, colorOf }) => {
 const mLabel = (m) => { const [y, mo] = m.split('-'); return new Date(+y, +mo - 1).toLocaleString('en', { month: 'short' }) + " '" + y.slice(2) }
 
 export default function Dashboard() {
+  const { language } = useLanguage()
   const { data, loading, error, reload } = useApi(() => api.stats(), [])
   if (loading) return <Spinner label="Loading dashboard…" />
   if (error) return <ErrorBox error={error} onRetry={reload} />
   const monthly = data.monthly_suspicious.map((m) => ({ ...m, label: mLabel(m.m) }))
   return (
     <div>
-      <PageHeader title="Dashboard" subtitle="Live statistics computed from the imported datasets and the LandGuard engine." />
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      <PageHeader title="Dashboard" subtitle="Live statistics computed from the imported datasets and the ভূমি প্রহরী engine." />
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         {CARDS.map(([k, label, style]) => (
-          <div key={k} className={`rounded-xl border p-4 ${style}`}><div className="text-3xl font-extrabold">{fmt(data.cards[k])}</div><div className="mt-0.5 text-xs font-semibold">{label}</div></div>))}
+          <div key={k} className={`rounded-xl border p-4 ${style}`}><div className="text-3xl font-extrabold">{data.cards[k].toLocaleString(language === 'bn' ? 'bn-BD' : 'en-US')}</div><div className="mt-0.5 text-xs font-semibold">{label}</div></div>))}
       </div>
-      <div className="mt-4 grid gap-4 lg:grid-cols-3">
+      <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         <Card title="Alert Distribution"><DonutWithLegend data={data.alert_distribution} colorOf={(_, i) => CHART_COLORS[i % CHART_COLORS.length]} /></Card>
         <Card title="Risk Level Distribution"><DonutWithLegend data={data.risk_distribution} colorOf={(d) => RISK_COLOR[d.name]} /></Card>
         <Card title="Monthly Suspicious Transactions">
@@ -49,7 +51,7 @@ export default function Dashboard() {
         </Card>
       </div>
       <Card title="Recent Suspicious Transactions" className="mt-4" right={<Link to="/alerts" className="text-sm font-semibold text-brand-700 hover:underline">All alerts →</Link>}>
-        <div className="overflow-x-auto"><table className="w-full text-left text-sm">
+        <div className="overflow-x-auto"><table className="w-full min-w-[720px] text-left text-sm">
           <thead className="bg-slate-50 text-xs text-slate-500"><tr><th className="p-2">Parcel ID</th><th>Type</th><th>Risk Level</th><th>Location</th><th>Date</th><th>Status</th><th /></tr></thead>
           <tbody>{data.recent_suspicious.map((r) => (
             <tr key={r.transaction_id} className="border-t border-slate-100">

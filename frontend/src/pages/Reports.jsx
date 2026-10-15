@@ -12,13 +12,13 @@ function Preview({ tid }) {
   if (error) return <ErrorBox error={error} onRetry={reload} />
   const p = d.parcel
   return (
-    <div className="card p-6">
+    <div className="card min-w-0 p-4 sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div><h2 className="text-2xl font-extrabold text-slate-900">LandGuard Investigation Report</h2><p className="text-xs text-slate-500">Transaction {tid} · decision-support only</p></div>
+        <div><h2 className="text-2xl font-extrabold text-slate-900">ভূমি প্রহরী Investigation Report</h2><p className="text-xs text-slate-500">Transaction {tid} · decision-support only</p></div>
         <a className="btn-primary" href={api.reportUrl(tid)}><Download className="h-4 w-4" />Download PDF</a>
       </div>
-      <div className="mt-4 grid gap-5 md:grid-cols-[1fr_1fr_1fr]">
-        <dl className="space-y-1 text-sm">
+      <div className="mt-4 grid min-w-0 gap-5 xl:grid-cols-3">
+        <dl className="min-w-0 space-y-1 break-words text-sm">
           <div>Parcel ID: <b>{p.parcel_id}</b></div><div>Location: <b>{p.upazila}, {p.district} (Mouza {p.mouza}, Khatian {p.khatian_no}, Dag {p.dag_no})</b></div>
           <div>Total area: <b>{dec(p.total_area_decimal)} decimal</b></div><div>Current owner: <b>{p.current_owner_name}</b></div>
           <div className="pt-1">Integrity status: <StatusBadge status={p.integrity_status} /></div>
@@ -44,7 +44,7 @@ export default function Reports() {
   return (
     <div>
       <PageHeader title="Investigation Reports" subtitle="Pick a transaction to preview and download its investigation report (PDF)." />
-      <div className="grid gap-5 lg:grid-cols-[340px_1fr]">
+      <div className="grid min-w-0 gap-5 lg:grid-cols-[minmax(280px,340px)_minmax(0,1fr)]">
         <Card title="Highest-priority transactions">
           <input className="input mb-3" placeholder="Search parcel / transaction ID" value={text} onChange={(e) => setText(e.target.value)} />
           {list.loading && <Spinner />}{list.error && <ErrorBox error={list.error} onRetry={list.reload} />}

@@ -146,7 +146,8 @@ def analytics():
 def parcels(district: Optional[str] = Query(None, max_length=60), upazila: Optional[str] = Query(None, max_length=60),
             mouza: Optional[str] = Query(None, max_length=60), khatian: Optional[str] = Query(None, max_length=20),
             dag: Optional[str] = Query(None, max_length=20), parcel_id: Optional[str] = Query(None, max_length=20),
-            owner: Optional[str] = Query(None, max_length=60), limit: int = Query(25, ge=1, le=100), offset: int = Query(0, ge=0)):
+            owner: Optional[str] = Query(None, max_length=60), integrity_status: Optional[str] = Query(None),
+            limit: int = Query(25, ge=1, le=100), offset: int = Query(0, ge=0)):
     where, p = [], {"limit": limit, "offset": offset}
     for col, val, op in [("p.district", district, "="), ("p.upazila", upazila, "="), ("p.mouza", mouza, "="),
                          ("p.khatian_no", khatian, "="), ("p.dag_no", dag, "=")]:
@@ -161,6 +162,16 @@ def parcels(district: Optional[str] = Query(None, max_length=60), upazila: Optio
         where.append("p.parcel_id IN (SELECT t.parcel_id FROM transactions t JOIN owners o ON o.owner_id IN (t.seller_id,t.buyer_id) "
                      "WHERE o.synthetic_name LIKE :own) OR o2.synthetic_name LIKE :own")
         p["own"] = f"%{owner.strip()}%"
+    category_filters = {
+        "High Concern": "m.ms >= 60",
+        "Review Required": "m.ms >= 30 AND m.ms < 60",
+        "Consistent": "m.ms IS NOT NULL AND m.ms < 30",
+        "No transactions": "m.ms IS NULL",
+    }
+    if integrity_status:
+        if integrity_status not in category_filters:
+            raise HTTPException(422, "Unknown parcel integrity category.")
+        where.append(category_filters[integrity_status])
     w = ("WHERE " + " AND ".join(f"({x})" for x in where)) if where else ""
     base = f"""FROM parcels p JOIN owners o2 ON o2.owner_id=p.current_owner_id
                LEFT JOIN (SELECT parcel_id, MAX(priority_score) ms, SUM(signal_count>0) alerts, COUNT(*) txns
@@ -335,15 +346,15 @@ def registration_mutation(transaction_id: str = TID):
 
 
 @router.get("/reports/{transaction_id}")
-def report(transaction_id: str = TID):
+def report(transaction_id: str = TID, lang: str = Query(default="bn", pattern="^(bn|en)$")):
     pid = tx_parcel(transaction_id)
     d = _parcel(pid)
     b = inv.investigation(transaction_id, pid)
     A = d["A"][d["A"].signal_count > 0].sort_values("priority_score", ascending=False).head(8)
     alerts_ = [{**inv.alert_summary(a), "evidence": pc.parse_evidence(a.evidence_json)} for _, a in A.iterrows()]
-    pdf = build_pdf(b["parcel"], pc.history(d), pc.timeline(d)["events"], b, alerts_, b["explanation"], b["comparison"])
+    pdf = build_pdf(b["parcel"], pc.history(d), pc.timeline(d)["events"], b, alerts_, b["explanation"], b["comparison"], language=lang)
     return Response(pdf, media_type="application/pdf",
-                    headers={"Content-Disposition": f'attachment; filename="LandGuard_{pid}_{transaction_id}.pdf"'})
+                    headers={"Content-Disposition": f'attachment; filename="report_{pid}_{transaction_id}.pdf"'})
 
 
 @router.get("/demo")

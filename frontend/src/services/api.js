@@ -6,7 +6,7 @@ async function request(path, options = {}) {
   try {
     res = await fetch(`${BASE}/api${path}`, options)
   } catch {
-    throw new Error('Cannot reach the LandGuard server. Make sure the backend is running on port 8000.')
+    throw new Error('Cannot reach the ভূমি প্রহরী server. Make sure the backend is running on port 8000.')
   }
   if (!res.ok) {
     let msg = 'Something went wrong. Please try again.'
@@ -40,5 +40,9 @@ export const api = {
   investigate: (tid) => json(`/investigate/${tid}`, { method: 'POST' }),
   comparison: (tid) => json(`/registration-mutation/${tid}`),
   modelMetrics: () => json('/model/metrics'),
-  reportUrl: (tid) => `${BASE}/api/reports/${tid}`,
+  reportUrl: (tid) => {
+    let language = 'bn'
+    try { language = localStorage.getItem('landguard-language') || 'bn' } catch { /* use primary language */ }
+    return `${BASE}/api/reports/${tid}?lang=${language}`
+  },
 }

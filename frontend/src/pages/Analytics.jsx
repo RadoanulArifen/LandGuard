@@ -12,12 +12,12 @@ export default function Analytics() {
   if (error) return <ErrorBox error={error} onRetry={reload} />
   const m = data.model_metrics
   const rows = m && [
-    ['Rules only', m.baseline_rules_only], [`ML only (${m.baseline_ml_only.model})`, m.baseline_ml_only], [`LandGuard hybrid (rules + ${m.hybrid_rules_plus_ml.model})`, m.hybrid_rules_plus_ml],
+    ['Rules only', m.baseline_rules_only], [`ML only (${m.baseline_ml_only.model})`, m.baseline_ml_only], [`ভূমি প্রহরী hybrid (rules + ${m.hybrid_rules_plus_ml.model})`, m.hybrid_rules_plus_ml],
   ]
   return (
     <div>
       <PageHeader title="Analytics" subtitle={`Overall picture across ${fmt(data.total_transactions)} transactions.`} />
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         <Card title="Normal vs suspicious">
           <ResponsiveContainer width="100%" height={230}><PieChart><Pie data={data.split} dataKey="value" nameKey="name" innerRadius={50} outerRadius={85} label={(e) => `${e.percent}%`}>
             {data.split.map((d, i) => <Cell key={d.name} fill={['#22c55e', '#f59e0b', '#ef4444'][i]} />)}</Pie><Tooltip formatter={(v) => fmt(v)} /><Legend /></PieChart></ResponsiveContainer>
@@ -35,7 +35,7 @@ export default function Analytics() {
         </Card>
       </div>
       <Card title="By transaction type" className="mt-4">
-        <div className="grid gap-3 sm:grid-cols-5">{data.by_type.map((t, i) => (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">{data.by_type.map((t, i) => (
           <div key={t.name} className="rounded-lg border border-slate-200 p-3"><div className="text-xs font-bold uppercase text-slate-500">{t.name}</div><div className="text-xl font-extrabold">{fmt(t.total)}</div>
             <div className="text-xs" style={{ color: CHART_COLORS[i] }}>{(100 * t.flagged / t.total).toFixed(0)}% with signals</div></div>))}</div>
       </Card>

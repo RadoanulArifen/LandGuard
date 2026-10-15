@@ -3,13 +3,16 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import { DemoProvider } from './hooks/useDemo'
+import { LanguageProvider } from './i18n'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
       <DemoProvider>
-        <App />
+        <LanguageProvider>
+          <App />
+        </LanguageProvider>
       </DemoProvider>
     </BrowserRouter>
   </React.StrictMode>,

@@ -30,7 +30,7 @@ async def lifespan(_: FastAPI):
     yield
 
 
-app = FastAPI(lifespan=lifespan, title="LandGuard API", version="1.0.0",
+app = FastAPI(lifespan=lifespan, title="ভূমি প্রহরী API", version="1.0.0",
               description="Explainable land transaction integrity engine. Decision-support only - never a legal finding.")
 app.add_middleware(CORSMiddleware, allow_origins=CORS_ORIGINS, allow_methods=["GET", "POST"], allow_headers=["*"])
 Base.metadata.create_all(engine)

@@ -71,6 +71,14 @@ def overview(d: dict) -> dict:
     top = None
     if len(A):
         top = A.sort_values("priority_score", ascending=False).iloc[0]
+    def latest(frame: pd.DataFrame, date_column: str) -> pd.Series | None:
+        if frame.empty:
+            return None
+        ordered = frame.sort_values(date_column, na_position="first") if date_column in frame else frame
+        return ordered.iloc[-1]
+
+    registration = latest(d["R"], "registration_date")
+    mutation = latest(d["M"], "mutation_date")
     return {
         "parcel_id": p.parcel_id, "khatian_no": p.khatian_no, "dag_no": p.dag_no, "mouza": p.mouza,
         "district": p.district, "upazila": p.upazila, "land_type": p.land_type,
@@ -87,6 +95,24 @@ def overview(d: dict) -> dict:
                     if parcel_status(max_level) == "High Concern" else
                     "Some records need review." if parcel_status(max_level) == "Review Required" else
                     "No significant inconsistencies detected in the linked records."),
+        "documents": {
+            "khatian": {"id": _clean(p.khatian_no), "date": _clean(p.creation_date), "status": "Available"},
+            "deed": None if registration is None else {
+                "id": _clean(registration.get("deed_reference")),
+                "date": _clean(registration.get("registration_date")),
+                "status": _clean(registration.get("verification_status")) or _clean(registration.get("registration_status")),
+            },
+            "mutation": None if mutation is None else {
+                "id": _clean(mutation.get("mutation_id")),
+                "date": _clean(mutation.get("mutation_date")),
+                "status": _clean(mutation.get("verification_status")) or _clean(mutation.get("mutation_status")),
+            },
+            "registration": None if registration is None else {
+                "id": _clean(registration.get("registration_id")),
+                "date": _clean(registration.get("registration_date")),
+                "status": _clean(registration.get("verification_status")) or _clean(registration.get("registration_status")),
+            },
+        },
     }
 
 
