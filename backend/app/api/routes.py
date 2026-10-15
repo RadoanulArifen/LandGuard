@@ -52,15 +52,23 @@ def tx_parcel(tid):
 # ------------------------------------------------------------------ health / meta
 @router.get("/health", response_model=HealthOut)
 def health():
-    ok, n_a, n_p = False, 0, 0
+    ok, n_a, n_p, n_t = False, 0, 0, 0
     try:
         n_p = int(q("SELECT COUNT(*) c FROM parcels").c[0])
+        n_t = int(q("SELECT COUNT(*) c FROM transactions").c[0])
         n_a = int(q("SELECT COUNT(*) c FROM analysis_results").c[0])
         ok = True
     except Exception:
         pass
-    return HealthOut(status="ok" if ok else "degraded", database=ok, analysis_ready=n_a > 0,
-                     model_ready=(MODEL_DIR / "landguard_model.joblib").exists(), transactions=n_a, parcels=n_p)
+
+    return HealthOut(
+        status="ok" if ok else "degraded",
+        database=ok,
+        analysis_ready=n_a > 0,
+        model_ready=(MODEL_DIR / "landguard_model.joblib").exists(),
+        transactions=n_t,
+        parcels=n_p
+    ) 
 
 
 @router.get("/meta/locations")
