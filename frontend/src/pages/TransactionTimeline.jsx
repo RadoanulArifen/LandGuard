@@ -43,7 +43,8 @@ export default function TransactionTimeline() {
   return (
     <div className="card p-6">
       <div className="overflow-x-auto pb-3">
-        <div className="relative flex min-w-max items-start pt-1">
+        <div className="flex min-w-max items-start pt-1">
+          <div className="relative flex items-start pt-1">
           <div className="absolute left-4 right-4 top-[46px] h-0.5 bg-slate-300" />
           {events.map((e, i) => (
             <div key={i} className="relative w-52 shrink-0 px-2 text-center">
@@ -56,7 +57,8 @@ export default function TransactionTimeline() {
               {e.transaction_id && <Link className="text-xs font-semibold text-brand-700 hover:underline" to={`/alerts/${e.transaction_id}`}>{e.transaction_id}</Link>}
               {e.conflict && <div className="mt-1 text-[11px] font-semibold text-red-600">{bn ? 'অসংগতি শনাক্ত হয়েছে' : 'Inconsistency flagged'}</div>}
             </div>))}
-          {conflict && <div className="ml-2 mt-6 shrink-0 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm font-bold text-red-600">{bn ? 'বিতর্কিত' : 'Conflict Detected'}</div>}
+          </div>
+          {conflict && <div className="ml-3 mt-6 shrink-0 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm font-bold text-red-600">{bn ? 'বিতর্কিত' : 'Conflict Detected'}</div>}
         </div>
       </div>
       <p className="mt-3 text-xs text-slate-400">{bn ? 'সম্পূর্ণ ইতিহাস দেখতে আড়াআড়িভাবে সরান। নীল = লেনদেন, বেগুনি = রেজিস্ট্রেশন, কালো = নামজারি, লাল = চিহ্নিত অসংগতি।' : 'Scroll sideways for the full history. Blue = transaction, indigo = registration, black = mutation, red = flagged.'}</p>

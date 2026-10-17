@@ -32,9 +32,9 @@ function ProtectedApp() {
 export default function App() {
   return (
     <Routes>
+      <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route element={<ProtectedApp />}>
-        <Route path="/" element={<Home />} />
         <Route path="/demo" element={<DemoStart />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/dashboard" element={<Dashboard />} />

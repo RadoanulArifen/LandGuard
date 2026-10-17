@@ -20,7 +20,7 @@ export default function Profile() {
     try { const result = await api.changePassword(current, next); setFeedback({ success: result.message }); setCurrent(''); setNext(''); setConfirm(''); setOpen(false) }
     catch (err) { setFeedback({ error: err.message }) }
   }
-  function signOut() { logout(); navigate('/login', { replace: true }) }
+  function signOut() { logout(); navigate('/', { replace: true }) }
   const fields = [['Name', user?.name], ['Email', user?.email], ['Role', user?.role], ['Office', user?.office], ['ID', user?.id], ['Status', user?.status]]
   return <>
     <PageHeader title="Profile" subtitle="Investigator account details" />

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, Brain, Database, FileSearch, GitBranch, Menu, Network, Play, ScanSearch, ShieldCheck, Siren, UserCheck, X } from 'lucide-react'
 import bannerImage from '../image/banner.jpg'
 import { Logo } from '../layouts/AppLayout'
+import { useAuth } from '../hooks/useAuth'
 
 const NAV = [['/', 'Home'], ['/dashboard', 'Dashboard'], ['/investigate', 'Investigate'], ['/alerts', 'Alerts'], ['/analytics', 'Analytics'], ['/reports', 'Reports']]
 const HIGHLIGHTS = [[ScanSearch, 'Double-Selling Detection'], [Network, 'Ownership Graph'], [Siren, 'AI-Powered Anomaly Detection'], [Brain, 'Explainable Evidence']]
@@ -19,6 +20,8 @@ const CAPS = ['Double-sale / overlapping transfer', 'Over-transfer vs recorded s
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { user } = useAuth()
+  const navItems = user ? [...NAV, ['/profile', 'Profile']] : []
   return (
     <div className="min-h-screen bg-white">
       <section className="relative isolate min-h-[580px] overflow-hidden text-white sm:min-h-[620px]">
@@ -26,12 +29,12 @@ export default function Home() {
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-brand-950/95 via-brand-950/70 to-brand-950/10" />
         <nav className="relative z-20 mx-auto flex max-w-6xl flex-wrap items-center justify-between px-4 py-4 sm:px-6 sm:py-5">
           <Logo />
-          <div className="hidden gap-5 text-lg font-bold text-white/90 lg:flex">{NAV.map(([to, l]) => <Link key={to} to={to} className="group relative rounded-md px-2 py-1.5 transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/15 hover:text-white hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white after:absolute after:bottom-0 after:left-2 after:h-0.5 after:w-0 after:bg-brand-300 after:transition-all after:duration-300 hover:after:w-[calc(100%-1rem)] motion-reduce:transition-none motion-reduce:hover:translate-y-0">{l}</Link>)}</div>
-          <button type="button" aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((open) => !open)} className="rounded-lg p-2 text-white transition-colors hover:bg-white/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white lg:hidden">
+          {user ? <div className="hidden gap-5 text-lg font-bold text-white/90 lg:flex">{navItems.map(([to, l]) => <Link key={to} to={to} className="group relative rounded-md px-2 py-1.5 transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/15 hover:text-white hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white after:absolute after:bottom-0 after:left-2 after:h-0.5 after:w-0 after:bg-brand-300 after:transition-all after:duration-300 hover:after:w-[calc(100%-1rem)] motion-reduce:transition-none motion-reduce:hover:translate-y-0">{l}</Link>)}</div> : <Link to="/login" className="ml-auto rounded-lg bg-white px-5 py-2 text-sm font-bold text-brand-950 shadow transition-colors hover:bg-brand-100">Login</Link>}
+          {user && <button type="button" aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((open) => !open)} className="rounded-lg p-2 text-white transition-colors hover:bg-white/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white lg:hidden">
             {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+          </button>}
           {mobileMenuOpen && <div className="absolute left-0 right-0 top-full flex flex-col gap-1 rounded-b-xl border-t border-white/15 bg-brand-950/95 p-3 shadow-xl backdrop-blur lg:hidden">
-            {NAV.map(([to, label]) => <Link key={to} to={to} onClick={() => setMobileMenuOpen(false)} className="rounded-lg px-4 py-3 text-base font-semibold text-white/90 transition-all hover:translate-x-1 hover:bg-white/10 hover:text-white motion-reduce:transition-none motion-reduce:hover:translate-x-0">{label}</Link>)}
+            {navItems.map(([to, label]) => <Link key={to} to={to} onClick={() => setMobileMenuOpen(false)} className="rounded-lg px-4 py-3 text-base font-semibold text-white/90 transition-all hover:translate-x-1 hover:bg-white/10 hover:text-white motion-reduce:transition-none motion-reduce:hover:translate-x-0">{label}</Link>)}
           </div>}
         </nav>
         <div className="mx-auto max-w-6xl px-4 pb-10 pt-10 sm:px-6 sm:pb-12 sm:pt-12">
@@ -39,8 +42,8 @@ export default function Home() {
           <p className="mt-3 max-w-xl text-2xl font-bold leading-tight sm:text-3xl md:text-4xl">Explainable Land Transaction Integrity and Fraud Detection</p>
           <p className="mt-5 max-w-md text-base text-white/90 sm:text-lg">Detect suspicious land transactions before they become ownership disputes.</p>
           <div className="mt-7 flex flex-wrap gap-3">
-            <Link to="/investigate" className="btn bg-brand-500 px-4 py-3 text-sm text-white hover:bg-brand-600 sm:px-6 sm:text-base">Investigate a Parcel <ArrowRight className="h-4 w-4" /></Link>
-            <Link to="/demo" className="btn border border-white/40 bg-white/10 px-4 py-3 text-sm text-white backdrop-blur hover:bg-white/20 sm:px-6 sm:text-base"><Play className="h-4 w-4" />View Demo</Link>
+            {user && <Link to="/investigate" className="btn bg-brand-500 px-4 py-3 text-sm text-white hover:bg-brand-600 sm:px-6 sm:text-base">Investigate a Parcel <ArrowRight className="h-4 w-4" /></Link>}
+            {user && <Link to="/demo" className="btn border border-white/40 bg-white/10 px-4 py-3 text-sm text-white backdrop-blur hover:bg-white/20 sm:px-6 sm:text-base"><Play className="h-4 w-4" />View Demo</Link>}
           </div>
           <div className="mt-14 grid max-w-3xl grid-cols-2 gap-3 sm:grid-cols-4">
             {HIGHLIGHTS.map(([Icon, t]) => <div key={t} className="rounded-xl bg-white p-4 text-slate-800 shadow-lg"><Icon className="mb-2 h-7 w-7 text-slate-700" /><div className="text-sm font-bold leading-snug">{t}</div></div>)}

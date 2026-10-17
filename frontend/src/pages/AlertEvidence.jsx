@@ -14,13 +14,14 @@ const LABELS = { ID: 'আইডি', Date: 'তারিখ', Type: 'ধরন',
   'Buyer (this transaction)': 'ক্রেতা (এই লেনদেন)', 'Days since previous transfer': 'আগের হস্তান্তরের পর কেটে যাওয়া দিন',
   'Strong threshold (days)': 'জোরালো সংকেতের সীমা (দিন)', 'Moderate threshold (days)': 'মাঝারি সংকেতের সীমা (দিন)',
   'Document / reference': 'নথি / সূত্র', Verification: 'যাচাইকরণ', Deed: 'দলিল', Reference: 'সূত্র', Area: 'জমির পরিমাণ (শতক)',
+  Issues: 'অসংগতির ধরন',
 }
 
 function KV({ obj, bn, date }) {
   return <table className="w-full table-fixed text-sm"><tbody>{Object.entries(obj).filter(([, v]) => v !== null && v !== undefined).map(([k, v]) => {
     const value = typeof v === 'number' ? dec(v) : String(v)
     const shown = bn ? (k === 'Date' ? date(value) : bnTerm(value)) : value
-    return <tr key={k} className="border-t border-slate-100 first:border-0"><td className="w-2/5 break-words py-1.5 text-slate-500">{bn ? (LABELS[k] || banglaDisplay(k.replace(/_/g, ' '))) : k.replace(/_/g, ' ')}</td><td className="break-all py-1.5 text-right font-semibold">{shown}</td></tr>
+    return <tr key={k} className="border-t border-slate-100 first:border-0"><td className="w-2/5 break-words py-1.5 text-slate-500">{bn ? (LABELS[k] || bnTerm(k.replace(/_/g, ' '))) : k.replace(/_/g, ' ')}</td><td className="break-all py-1.5 text-right font-semibold">{shown}</td></tr>
   })}</tbody></table>
 }
 

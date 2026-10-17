@@ -7,6 +7,10 @@ const WORDS = {
 
 const DIGITS = { '0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪', '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯' }
 const TERMS = {
+  organization: 'প্রতিষ্ঠান', farmer: 'কৃষক', business: 'ব্যবসায়ী', retired: 'অবসরপ্রাপ্ত', homemaker: 'গৃহিণী',
+  other: 'অন্যান্য', 'private employee': 'বেসরকারি চাকরিজীবী', teacher: 'শিক্ষক', 'government employee': 'সরকারি চাকরিজীবী',
+  'service holder': 'চাকরিজীবী', engineer: 'প্রকৌশলী', doctor: 'চিকিৎসক', student: 'শিক্ষার্থী', lawyer: 'আইনজীবী',
+  'not applicable': 'প্রযোজ্য নয়', 'under review': 'পর্যালোচনাধীন',
   'original ownership': 'প্রাথমিক মালিকানা', original: 'প্রাথমিক মালিকানা', 'original owner': 'প্রাথমিক মালিক',
   transaction: 'লেনদেন', transfer: 'হস্তান্তর', registration: 'রেজিস্ট্রেশন', mutation: 'নামজারি',
   sale: 'বিক্রয়', gift: 'দান', inheritance: 'উত্তরাধিকার', lease: 'ইজারা',

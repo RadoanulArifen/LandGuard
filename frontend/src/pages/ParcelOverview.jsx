@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
-import { AlertOctagon, CheckCircle2, Eye, FileText, TriangleAlert, X } from 'lucide-react'
+import { AlertOctagon, CheckCircle2, Download, Eye, FileText, TriangleAlert, X } from 'lucide-react'
 import overviewImage from '../image/overview.jpeg'
 import khatianImage from '../image/nothipotro/khotiyan nothi.png'
 import deedImage from '../image/nothipotro/dolil.jpeg'
@@ -28,6 +28,10 @@ export default function ParcelOverview() {
     { key: 'mutation', title: bn ? 'নামজারি নথি' : 'Mutation record', image: mutationImage, doc: docs.mutation },
     { key: 'registration', title: bn ? 'রেজিস্ট্রেশন নথি' : 'Registration record', image: registrationImage, doc: docs.registration },
   ]
+  const documentExtension = documentPreview?.image?.split('?')[0].split('.').pop() || 'png'
+  const documentFilename = documentPreview
+    ? `${documentPreview.key}-${String(documentPreview.doc?.id || 'document').replace(/[^a-zA-Z0-9_-]/g, '-')}.${documentExtension}`
+    : ''
   const dateText = (value) => value ? new Intl.DateTimeFormat(bn ? 'bn-BD' : 'en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(value)) : '—'
   const st = p.integrity_status
   const statusLabel = bn ? ({ 'High Concern': 'উচ্চ উদ্বেগ', 'Review Required': 'পর্যালোচনা প্রয়োজন', Consistent: 'সামঞ্জস্যপূর্ণ', 'No transactions': 'কোনো লেনদেন নেই' }[st] || st) : st
@@ -98,7 +102,7 @@ export default function ParcelOverview() {
         <div role="dialog" aria-modal="true" aria-label={documentPreview.title} className="relative flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-xl bg-white shadow-2xl" onClick={(e) => e.stopPropagation()}>
           <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-3"><div className="min-w-0"><h2 className="truncate font-bold text-slate-900">{documentPreview.title}</h2><p className="text-xs text-slate-500">{documentPreview.doc?.id || noDocument}</p></div><button type="button" className="rounded-full p-2 text-slate-600 hover:bg-slate-100" onClick={() => setDocumentPreview(null)} aria-label={bn ? 'বন্ধ করুন' : 'Close'}><X className="h-5 w-5" /></button></div>
           <div className="min-h-0 overflow-auto bg-slate-100 p-3 text-center sm:p-5"><img src={documentPreview.image} alt={documentPreview.title} className="mx-auto max-h-[72vh] max-w-full rounded shadow-md" /></div>
-          <div className="flex flex-wrap justify-between gap-2 px-4 py-3 text-sm text-slate-600"><span>{dateLabel}: {dateText(documentPreview.doc?.date)}</span><span>{documentPreview.doc?.id || noDocument}</span></div>
+          <div className="flex flex-col gap-3 border-t border-slate-200 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"><div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-600"><span>{dateLabel}: {dateText(documentPreview.doc?.date)}</span><span>{documentPreview.doc?.id || noDocument}</span></div><a href={documentPreview.image} download={documentFilename} className="btn-primary shrink-0"><Download className="h-4 w-4" />{bn ? 'নথি ডাউনলোড করুন' : 'Download document'}</a></div>
         </div>
       </div>}
     </div>

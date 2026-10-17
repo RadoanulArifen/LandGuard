@@ -15,10 +15,10 @@ export default function Login() {
   const [busy, setBusy] = useState(false)
   const fillDemoCredentials = () => { setEmail('admin@gmail.com'); setPassword('Admin@123'); setError('') }
   if (!ready) return <div className="min-h-screen bg-slate-100" />
-  if (user) return <Navigate to={location.state?.from || '/dashboard'} replace />
+  if (user) return <Navigate to="/" replace />
   async function submit(event) {
     event.preventDefault(); setError(''); setBusy(true)
-    try { await login(email, password); navigate(location.state?.from || '/dashboard', { replace: true }) }
+    try { await login(email, password); navigate('/', { replace: true }) }
     catch (err) {
       setError(err.status === 404
         ? 'The connected backend does not have the login endpoint yet. Deploy the latest LandGuard backend, then try again.'
