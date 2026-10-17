@@ -17,7 +17,9 @@ if DATABASE_URL.startswith("sqlite:///") and not DATABASE_URL.startswith("sqlite
     # make a relative sqlite path relative to backend/
     DATABASE_URL = "sqlite:///" + str((BASE_DIR / DATABASE_URL.replace("sqlite:///", "")).resolve())
 CORS_ORIGINS = [o.strip() for o in os.getenv(
-    "CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",") if o.strip()]
+    "CORS_ORIGINS",
+    "http://localhost:5173,http://localhost:5174,http://127.0.0.1:5173,http://127.0.0.1:5174"
+).split(",") if o.strip()]
 
 CSV_FILES = ["parcels", "owners", "transactions", "registrations", "mutations", "fraud_labels"]
 

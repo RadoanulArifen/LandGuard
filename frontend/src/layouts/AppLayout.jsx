@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { NavLink, Outlet, Link, useLocation } from 'react-router-dom'
-import { BarChart3, FileText, Home, LayoutDashboard, Menu, Search, Siren, X } from 'lucide-react'
+import { BarChart3, FileText, Home, LayoutDashboard, Menu, Search, Siren, X, UserRound } from 'lucide-react'
 import DemoBar from '../components/DemoBar'
 import { Disclaimer } from '../components/ui'
 import brandMark from '../image/ভূমি প্রহরী_ নিরাপদ জমির প্রতীক.png'
+import { useAuth } from '../hooks/useAuth'
 
 const NAV = [
   ['/', 'Home', Home], ['/dashboard', 'Dashboard', LayoutDashboard], ['/investigate', 'Investigate', Search],
@@ -22,6 +23,7 @@ export const Logo = ({ light = true }) => (
 export default function AppLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const location = useLocation()
+  const { user } = useAuth()
   const isParcelOverview = /^\/parcel\/[^/]+\/overview\/?$/.test(location.pathname)
   return (
     <div className="flex min-h-screen">
@@ -34,6 +36,7 @@ export default function AppLayout() {
               <Icon className="h-5 w-5" />{label}
             </NavLink>
           ))}
+          <NavLink to="/profile" className={({ isActive }) => `mt-3 flex items-center gap-3 rounded-lg px-3 py-3 text-lg font-semibold transition-colors hover:bg-white/15 ${isActive ? 'bg-brand-800 text-white' : 'text-brand-100/75'}`}><UserRound className="h-5 w-5"/><span className="min-w-0 truncate">{user?.name || 'Profile'}</span></NavLink>
         </nav>
         <div className="mt-auto rounded-lg bg-white/5 p-3 text-xs text-brand-100/70">Decision-support only. Human review is required for every alert.</div>
       </aside>
@@ -48,6 +51,7 @@ export default function AppLayout() {
             {NAV.map(([to, label, Icon]) => <NavLink key={to} to={to} end={to === '/'} onClick={() => setMobileMenuOpen(false)} className={({ isActive }) => `flex items-center gap-3 rounded-lg px-4 py-3 text-base font-semibold transition-colors hover:bg-white/10 hover:text-white ${isActive ? 'bg-brand-800 text-white' : 'text-brand-100/80'}`}>
               <Icon className="h-5 w-5" />{label}
             </NavLink>)}
+            <NavLink to="/profile" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 rounded-lg px-4 py-3 text-base font-semibold text-brand-100/80 hover:bg-white/10"><UserRound className="h-5 w-5"/>{user?.name || 'Profile'}</NavLink>
           </nav>}
         </header>
         <main className="mx-auto w-full max-w-6xl min-w-0 px-4 pb-24 pt-4 sm:p-5 md:p-8"><Outlet />{!isParcelOverview && <Disclaimer />}</main>

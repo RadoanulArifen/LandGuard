@@ -1,5 +1,8 @@
 // Thin wrapper around fetch. All requests go to /api (proxied to FastAPI by Vite in development).
-const BASE = import.meta.env.VITE_API_BASE || ''
+const BASE = (import.meta.env.VITE_API_BASE || '').trim()
+const authHeaders = () => {
+  try { const token = localStorage.getItem('lg_auth_token'); return token ? { Authorization: `Bearer ${token}` } : {} } catch { return {} }
+}
 
 async function request(path, options = {}) {
   let res
@@ -11,7 +14,9 @@ async function request(path, options = {}) {
   if (!res.ok) {
     let msg = 'Something went wrong. Please try again.'
     try { msg = (await res.json()).detail || msg } catch { /* keep default */ }
-    throw new Error(msg)
+    const error = new Error(msg)
+    error.status = res.status
+    throw error
   }
   return res
 }
@@ -24,6 +29,9 @@ const qs = (params = {}) => {
 }
 
 export const api = {
+  login: (email, password) => json('/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) }),
+  me: () => json('/auth/me', { headers: authHeaders() }),
+  changePassword: (current_password, new_password) => json('/auth/change-password', { method: 'POST', headers: { ...authHeaders(), 'Content-Type': 'application/json' }, body: JSON.stringify({ current_password, new_password }) }),
   health: () => json('/health'),
   stats: () => json('/dashboard/stats'),
   analytics: () => json('/analytics'),

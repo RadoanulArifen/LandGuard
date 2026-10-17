@@ -1,10 +1,16 @@
 """All REST endpoints."""
 import json
 import logging
+import os
+import base64
+import hashlib
+import hmac
+import secrets
+import time
 from typing import Optional
 
 import pandas as pd
-from fastapi import APIRouter, HTTPException, Path, Query, Response
+from fastapi import APIRouter, HTTPException, Path, Query, Response, Header
 from sqlalchemy import text
 
 from app.config import MODEL_DIR
@@ -18,6 +24,91 @@ from app.services.scoring import parcel_status
 
 log = logging.getLogger("landguard")
 router = APIRouter(prefix="/api")
+
+# Demo investigator authentication. Password hashes live in the existing database;
+# credentials can be overridden through the backend environment.
+AUTH_SECRET = None
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "admin@gmail.com").strip().lower()
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "Admin@123")
+PROFILE = {"name": "Radoanul Arifen", "email": ADMIN_EMAIL, "role": "Investigator",
+           "office": "Land Investigation", "id": "INV-001", "status": "Active"}
+
+def _password_hash(password, salt=None):
+    salt = salt or secrets.token_bytes(16)
+    digest = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, 240000)
+    return base64.b64encode(salt + digest).decode()
+
+def _password_matches(password, encoded):
+    try:
+        raw = base64.b64decode(encoded)
+        return hmac.compare_digest(raw[16:], hashlib.pbkdf2_hmac("sha256", password.encode(), raw[:16], 240000))
+    except Exception:
+        return False
+
+def _auth_setup():
+    global AUTH_SECRET
+    with engine.begin() as con:
+        con.execute(text("CREATE TABLE IF NOT EXISTS investigator_auth (email TEXT PRIMARY KEY, password_hash TEXT NOT NULL)"))
+        con.execute(text("CREATE TABLE IF NOT EXISTS investigator_auth_settings (setting TEXT PRIMARY KEY, value TEXT NOT NULL)"))
+        row = con.execute(text("SELECT password_hash FROM investigator_auth WHERE email=:e"), {"e": ADMIN_EMAIL}).first()
+        if row is None:
+            con.execute(text("INSERT INTO investigator_auth (email,password_hash) VALUES (:e,:p)"), {"e": ADMIN_EMAIL, "p": _password_hash(ADMIN_PASSWORD)})
+        configured_secret = os.getenv("AUTH_SECRET")
+        secret_row = con.execute(text("SELECT value FROM investigator_auth_settings WHERE setting='token_secret'")).first()
+        if configured_secret:
+            AUTH_SECRET = configured_secret.encode()
+        else:
+            if secret_row is None:
+                secret_row = (secrets.token_hex(32),)
+                con.execute(text("INSERT INTO investigator_auth_settings (setting,value) VALUES ('token_secret',:v)"), {"v": secret_row[0]})
+            AUTH_SECRET = secret_row[0].encode()
+
+def _token(email):
+    payload = base64.urlsafe_b64encode(json.dumps({"email": email, "exp": int(time.time()) + 43200}).encode()).decode().rstrip("=")
+    signature = hmac.new(AUTH_SECRET, payload.encode(), hashlib.sha256).hexdigest()
+    return f"{payload}.{signature}"
+
+def _current_user(authorization):
+    _auth_setup()
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(401, "Please log in again.")
+    try:
+        payload, signature = authorization[7:].split(".", 1)
+        expected = hmac.new(AUTH_SECRET, payload.encode(), hashlib.sha256).hexdigest()
+        data = json.loads(base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4)))
+        if not hmac.compare_digest(signature, expected) or data["exp"] < time.time() or data["email"] != ADMIN_EMAIL:
+            raise ValueError()
+    except Exception:
+        raise HTTPException(401, "Session expired. Please log in again.")
+    return PROFILE
+
+@router.post("/auth/login")
+def auth_login(body: dict):
+    _auth_setup()
+    with engine.connect() as con:
+        row = con.execute(text("SELECT password_hash FROM investigator_auth WHERE email=:e"), {"e": str(body.get("email", "")).strip().lower()}).first()
+    if not row or not _password_matches(str(body.get("password", "")), row[0]):
+        raise HTTPException(401, "Email or password is incorrect.")
+    return {"access_token": _token(ADMIN_EMAIL), "token_type": "bearer", "user": PROFILE}
+
+@router.get("/auth/me")
+def auth_me(authorization: Optional[str] = Header(None)):
+    _auth_setup()
+    return _current_user(authorization)
+
+@router.post("/auth/change-password")
+def auth_change_password(body: dict, authorization: Optional[str] = Header(None)):
+    user = _current_user(authorization)
+    _auth_setup()
+    with engine.begin() as con:
+        row = con.execute(text("SELECT password_hash FROM investigator_auth WHERE email=:e"), {"e": user["email"]}).first()
+        if not row or not _password_matches(str(body.get("current_password", "")), row[0]):
+            raise HTTPException(400, "Current password is incorrect.")
+        new_password = str(body.get("new_password", ""))
+        if len(new_password) < 8:
+            raise HTTPException(400, "New password must be at least 8 characters.")
+        con.execute(text("UPDATE investigator_auth SET password_hash=:p WHERE email=:e"), {"p": _password_hash(new_password), "e": user["email"]})
+    return {"message": "Password changed successfully."}
 
 PID = Path(pattern=r"^P-\d{6}$", description="Parcel ID, e.g. P-000032")
 TID = Path(pattern=r"^T-\d{6}$", description="Transaction ID, e.g. T-000123")

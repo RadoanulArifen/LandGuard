@@ -21,7 +21,16 @@ export default function DemoBar() {
   const { demo, stop } = useDemo()
   const nav = useNavigate()
   const loc = useLocation()
-  if (!demo) return null
+  if (!demo) return (
+    <div className="sticky top-0 z-30 border-b border-brand-700 bg-brand-900 px-4 py-2 text-white">
+      <div className="flex items-center gap-3">
+        <span className="rounded bg-white/15 px-2 py-0.5 text-xs font-bold uppercase tracking-wide">Judge demo</span>
+        <button onClick={() => nav('/demo')} className="rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/90 transition-colors hover:bg-white/20">
+          View Demo
+        </button>
+      </div>
+    </div>
+  )
   const steps = demoSteps(demo)
   const here = loc.pathname + loc.search
   let idx = steps.findIndex((s) => s.path === here)

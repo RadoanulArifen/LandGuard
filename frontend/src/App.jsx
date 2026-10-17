@@ -1,4 +1,7 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { useAuth } from './hooks/useAuth'
+import Login from './pages/Login'
+import Profile from './pages/Profile'
 import AppLayout from './layouts/AppLayout'
 import ParcelLayout from './layouts/ParcelLayout'
 import AlertDetailLayout from './layouts/AlertDetailLayout'
@@ -19,12 +22,21 @@ import Analytics from './pages/Analytics'
 import Reports from './pages/Reports'
 import NotFound from './pages/NotFound'
 
+function ProtectedApp() {
+  const { user, ready } = useAuth()
+  const location = useLocation()
+  if (!ready) return <div className="min-h-screen bg-slate-100" />
+  return user ? <AppLayout /> : <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />
+}
+
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/demo" element={<DemoStart />} />
-      <Route element={<AppLayout />}>
+      <Route path="/login" element={<Login />} />
+      <Route element={<ProtectedApp />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/demo" element={<DemoStart />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/investigate" element={<Investigate />} />
         <Route path="/parcel/:parcelId" element={<ParcelLayout />}>
