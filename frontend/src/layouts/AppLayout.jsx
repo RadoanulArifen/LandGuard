@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, Outlet, Link, useLocation } from 'react-router-dom'
-import { BarChart3, FileText, Home, LayoutDashboard, Menu, Search, Siren, X, UserRound } from 'lucide-react'
+import { BarChart3, FileText, Home, LayoutDashboard, Menu, Search, Siren, X, UserRound, ScanText } from 'lucide-react'
 import DemoBar from '../components/DemoBar'
 import { Disclaimer } from '../components/ui'
 import brandMark from '../image/ভূমি প্রহরী_ নিরাপদ জমির প্রতীক.png'
@@ -8,7 +8,7 @@ import { useAuth } from '../hooks/useAuth'
 
 const NAV = [
   ['/', 'Home', Home], ['/dashboard', 'Dashboard', LayoutDashboard], ['/investigate', 'Investigate', Search],
-  ['/alerts', 'Alerts', Siren], ['/analytics', 'Analytics', BarChart3], ['/reports', 'Reports', FileText],
+  ['/alerts', 'Alerts', Siren], ['/documents', 'দলিল যাচাই', ScanText], ['/analytics', 'Analytics', BarChart3], ['/reports', 'Reports', FileText],
 ]
 
 export const Logo = ({ light = true }) => (

@@ -21,6 +21,7 @@ import AiAnalysis from './pages/AiAnalysis'
 import Analytics from './pages/Analytics'
 import Reports from './pages/Reports'
 import NotFound from './pages/NotFound'
+import DocumentVerification from './pages/DocumentVerification'
 
 function ProtectedApp() {
   const { user, ready } = useAuth()
@@ -39,6 +40,7 @@ export default function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/investigate" element={<Investigate />} />
+        <Route path="/documents" element={<DocumentVerification />} />
         <Route path="/parcel/:parcelId" element={<ParcelLayout />}>
           <Route index element={<Navigate to="overview" replace />} />
           <Route path="overview" element={<ParcelOverview />} />

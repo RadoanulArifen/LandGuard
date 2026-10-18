@@ -29,6 +29,8 @@ const qs = (params = {}) => {
 }
 
 export const api = {
+  extractDocument: (file) => { const form = new FormData(); form.append('file', file); return json('/document/extract', { method: 'POST', headers: authHeaders(), body: form }) },
+  verifyDocument: (fields) => json('/document/verify', { method: 'POST', headers: { ...authHeaders(), 'Content-Type': 'application/json' }, body: JSON.stringify({ fields }) }),
   login: (email, password) => json('/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) }),
   me: () => json('/auth/me', { headers: authHeaders() }),
   changePassword: (current_password, new_password) => json('/auth/change-password', { method: 'POST', headers: { ...authHeaders(), 'Content-Type': 'application/json' }, body: JSON.stringify({ current_password, new_password }) }),

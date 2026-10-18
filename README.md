@@ -73,6 +73,8 @@ run_frontend.sh     ওয়েব অ্যাপ চালু করে
 - Node.js LTS ও npm
 - Git
 
+দলিল যাচাইয়ের স্ক্যান/OCR সুবিধার জন্য Tesseract OCR এবং বাংলা ভাষার ডেটা (`tesseract-ocr`, `tesseract-ocr-ben`) ইনস্টল থাকতে হবে। Python নির্ভরতাগুলো `backend/requirements.txt`-এ আছে। OCR নির্ভরতা না থাকলে ডিজিটাল PDF-এর পাঠ্য বের করা যাবে, তবে স্ক্যান করা ছবি/PDF থেকে OCR করা যাবে না।
+
 Docker, বহিরাগত এআই API বা চলমান ইন্টারনেট সংযোগ লাগে না; তবে প্রথম সেটআপে Python ও npm নির্ভরতাগুলো ইনস্টল করতে হবে।
 
 ### ইনস্টল ও চালু করা
@@ -221,6 +223,8 @@ LandGuard links records to examine ownership and transaction continuity:
 - Python 3.11 or newer
 - Node.js LTS and npm
 - Git
+
+Scanned document OCR requires the system Tesseract binary and Bengali language data (`tesseract-ocr` and `tesseract-ocr-ben`). Python packages are listed in `backend/requirements.txt`. Digital PDF text extraction can work without Tesseract; scanned image/PDF OCR cannot.
 
 No Docker, external AI API, or ongoing internet connection is required. Internet access is needed during initial dependency installation.
 

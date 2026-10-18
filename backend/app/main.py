@@ -10,6 +10,7 @@ from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.routes import router
+from app.api.document_routes import router as document_router
 from app.config import CORS_ORIGINS
 from app.database.db import Base, engine
 
@@ -35,5 +36,6 @@ app = FastAPI(lifespan=lifespan, title="ভূমি প্রহরী API", ve
 app.add_middleware(CORSMiddleware, allow_origins=CORS_ORIGINS, allow_methods=["GET", "POST"], allow_headers=["*"])
 Base.metadata.create_all(engine)
 app.include_router(router)
+app.include_router(document_router)
 
 
