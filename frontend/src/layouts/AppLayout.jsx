@@ -5,10 +5,11 @@ import DemoBar from '../components/DemoBar'
 import { Disclaimer } from '../components/ui'
 import brandMark from '../image/ভূমি প্রহরী_ নিরাপদ জমির প্রতীক.png'
 import { useAuth } from '../hooks/useAuth'
+import { useLanguage } from '../i18n'
 
 const NAV = [
   ['/', 'Home', Home], ['/dashboard', 'Dashboard', LayoutDashboard], ['/investigate', 'Investigate', Search],
-  ['/alerts', 'Alerts', Siren], ['/documents', 'দলিল যাচাই', ScanText], ['/analytics', 'Analytics', BarChart3], ['/reports', 'Reports', FileText],
+  ['/alerts', 'Alerts', Siren], ['/documents', 'Document verification', ScanText], ['/analytics', 'Analytics', BarChart3], ['/reports', 'Reports', FileText],
 ]
 
 export const Logo = ({ light = true }) => (
@@ -24,6 +25,8 @@ export default function AppLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const location = useLocation()
   const { user } = useAuth()
+  const { language } = useLanguage()
+  const bn = language === 'bn'
   const isParcelOverview = /^\/parcel\/[^/]+\/overview\/?$/.test(location.pathname)
   return (
     <div className="flex min-h-screen">
@@ -33,7 +36,7 @@ export default function AppLayout() {
           {NAV.map(([to, label, Icon]) => (
             <NavLink key={to} to={to} end={to === '/'}
               className={({ isActive }) => `flex items-center gap-3 rounded-lg px-3 py-3 text-lg font-semibold transition-all duration-200 hover:translate-x-1 hover:scale-[1.02] hover:bg-white/15 hover:text-white hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-x-0 motion-reduce:hover:scale-100 ${isActive && to !== '/' ? 'bg-brand-800 text-white shadow-inner' : 'text-brand-100/75'}`}>
-              <Icon className="h-5 w-5" />{label}
+              <Icon className="h-5 w-5" />{to === '/documents' && bn ? 'দলিল যাচাই' : label}
             </NavLink>
           ))}
           <NavLink to="/profile" className={({ isActive }) => `mt-3 flex items-center gap-3 rounded-lg px-3 py-3 text-lg font-semibold transition-colors hover:bg-white/15 ${isActive ? 'bg-brand-800 text-white' : 'text-brand-100/75'}`}><UserRound className="h-5 w-5"/><span className="min-w-0 truncate">{user?.name || 'Profile'}</span></NavLink>
@@ -49,7 +52,7 @@ export default function AppLayout() {
           </button>
           {mobileMenuOpen && <nav className="absolute left-0 right-0 top-full flex flex-col gap-1 border-t border-white/10 bg-brand-950 p-3 shadow-xl">
             {NAV.map(([to, label, Icon]) => <NavLink key={to} to={to} end={to === '/'} onClick={() => setMobileMenuOpen(false)} className={({ isActive }) => `flex items-center gap-3 rounded-lg px-4 py-3 text-base font-semibold transition-colors hover:bg-white/10 hover:text-white ${isActive ? 'bg-brand-800 text-white' : 'text-brand-100/80'}`}>
-              <Icon className="h-5 w-5" />{label}
+              <Icon className="h-5 w-5" />{to === '/documents' && bn ? 'দলিল যাচাই' : label}
             </NavLink>)}
             <NavLink to="/profile" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 rounded-lg px-4 py-3 text-base font-semibold text-brand-100/80 hover:bg-white/10"><UserRound className="h-5 w-5"/>{user?.name || 'Profile'}</NavLink>
           </nav>}

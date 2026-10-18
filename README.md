@@ -1,3 +1,5 @@
+![LandGuard application screenshot](moc.png)
+
 # ভূমি প্রহরী | LandGuard
 
 **বাংলাদেশের জমির নথি যাচাই ও লেনদেনের অসংগতি শনাক্ত করার সিদ্ধান্ত-সহায়ক ব্যবস্থা**  
@@ -37,7 +39,11 @@ LandGuard analyzes parcel, owner, transaction, registration, and mutation record
 - একই অংশ একাধিকবার হস্তান্তর, অতিরিক্ত হস্তান্তর, দ্রুত হস্তান্তর, মালিকানার ধারাবাহিকতা ভঙ্গ এবং রেজিস্ট্রেশন/নামজারির অমিল শনাক্ত করা
 - প্রতিটি সতর্কতার কারণ, সংশ্লিষ্ট নথি ও তুলনার ফল দেখা
 - তদন্তের অগ্রাধিকার স্কোর এবং ব্যাখ্যাযোগ্য এআই বিশ্লেষণ দেখা
+- PDF, JPG, JPEG ও PNG দলিল থেকে তথ্য শনাক্ত করে ফর্মে আনা, প্রয়োজনে সংশোধন করা এবং বিদ্যমান LandGuard রেকর্ডের সঙ্গে তুলনা করা
+- দলিল যাচাই, বিশ্লেষণ ড্যাশবোর্ড ও সাইডবার বাংলা/ইংরেজি ভাষা সেটিং অনুসারে ব্যবহার করা
 - বাংলা বা ইংরেজিতে ওয়েবসাইট ব্যবহার ও PDF প্রতিবেদন ডাউনলোড করা
+
+দলিলের তথ্য শনাক্তকরণ কেবল পর্যালোচনার সহায়তা। শনাক্ত করা তথ্য ব্যবহারকারীকে যাচাই ও প্রয়োজনে সংশোধন করতে হবে। ফলাফল কোনো আইনি সিদ্ধান্ত বা মালিকানা/জালিয়াতির নিশ্চয়তা নয়।
 
 ### প্রযুক্তি
 
@@ -169,6 +175,8 @@ min(৭০, নিয়মের ওজনের যোগফল) + ৩০ × �
 - `GET /api/alerts`, `GET /api/alerts/{transaction_id}`
 - `GET /api/investigations/{transaction_id}`, `POST /api/investigate/{transaction_id}`
 - `GET /api/registration-mutation/{transaction_id}`
+- `POST /api/document/extract` — PDF/image থেকে যাচাইযোগ্য তথ্য শনাক্ত করে (সর্বোচ্চ ১৫ MB)
+- `POST /api/document/verify` — পাঠানো দলিলের তথ্য বিদ্যমান LandGuard জমির রেকর্ডের সঙ্গে তুলনা করে
 - `GET /api/reports/{transaction_id}?lang=bn` — বাংলা PDF; `lang=en` দিলে ইংরেজি PDF
 - `GET /api/owners/{owner_id}`, `GET /api/owners/{owner_id}/history`
 - `GET /api/ownership/history?parcel_id={parcel_id}` অথবা `?owner_id={owner_id}`
@@ -206,7 +214,11 @@ LandGuard links records to examine ownership and transaction continuity:
 - Detect overlapping transfers, over-transfers, rapid transfers, ownership-chain breaks, and registration/mutation mismatches
 - Review the evidence and linked records behind each alert
 - View Investigation Priority Scores and explainable AI analysis
+- Extract fields from PDF, JPG, JPEG, and PNG documents, review or edit them, and compare them with existing LandGuard records
+- Use document verification, the analytics dashboard, and navigation in Bengali or English
 - Use the website and download PDF reports in Bengali or English
+
+Document extraction is provided for review support. Users should verify and correct extracted values where needed. Results are not legal findings and do not establish ownership or fraud.
 
 ### Technology
 
@@ -320,6 +332,8 @@ All API routes use the `/api` prefix. Main endpoints:
 - `GET /api/alerts`, `GET /api/alerts/{transaction_id}`
 - `GET /api/investigations/{transaction_id}`, `POST /api/investigate/{transaction_id}`
 - `GET /api/registration-mutation/{transaction_id}`
+- `POST /api/document/extract` — extract reviewable fields from a PDF/image (15 MB maximum)
+- `POST /api/document/verify` — compare submitted document fields with existing LandGuard parcel records
 - `GET /api/reports/{transaction_id}?lang=en` — English PDF; use `lang=bn` for Bengali
 - `GET /api/owners/{owner_id}`, `GET /api/owners/{owner_id}/history`
 - `GET /api/ownership/history?parcel_id={parcel_id}` or `?owner_id={owner_id}`
