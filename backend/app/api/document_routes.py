@@ -30,18 +30,20 @@ def verify(body: dict, request: Request):
     from app.api.routes import _current_user
     _current_user(request.headers.get("authorization"))
     fields = body.get("fields") or {}
-    clauses, params = [], {}
+    clauses, score_terms, params = [], [], {}
+    weights = {"district": 1, "upazila": 1, "mouza": 2, "khatian": 4, "dag": 4}
     for key, column in (("district", "district"), ("upazila", "upazila"), ("mouza", "mouza"), ("khatian", "khatian_no"), ("dag", "dag_no")):
         value = str((fields.get(key) or "").strip())
         if value:
             clauses.append(f"p.{column}=:v_{key}")
             params[f"v_{key}"] = value
+            score_terms.append(f"CASE WHEN p.{column}=:v_{key} THEN {weights[key]} ELSE 0 END")
     if not clauses:
         return {"matches": [], "message": "মিল খোঁজার জন্য অন্তত খতিয়ান, দাগ বা অবস্থানের তথ্য দিন।"}
-    # Prioritize strong parcel identifiers. Location-only matches are useful candidates, not confirmation.
-    order = "CASE WHEN p.khatian_no=:v_khatian THEN 0 ELSE 1 END, CASE WHEN p.dag_no=:v_dag THEN 0 ELSE 1 END" if "v_khatian" in params and "v_dag" in params else "p.parcel_id"
+    # Any matching identifier can surface a candidate; exact parcel identifiers rank ahead of location-only matches.
+    score = " + ".join(score_terms)
     with engine.connect() as con:
         rows = con.execute(text(f"""SELECT p.parcel_id,p.district,p.upazila,p.mouza,p.khatian_no,p.dag_no,p.total_area_decimal,
             o.synthetic_name current_owner_name,p.land_type FROM parcels p LEFT JOIN owners o ON o.owner_id=p.current_owner_id
-            WHERE {' AND '.join(clauses)} ORDER BY {order} LIMIT 10"""), params).mappings().all()
+            WHERE ({' OR '.join(clauses)}) ORDER BY ({score}) DESC, p.parcel_id LIMIT 10"""), params).mappings().all()
     return {"matches": [dict(row) for row in rows], "multiple": len(rows) > 1}
